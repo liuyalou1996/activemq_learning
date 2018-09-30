@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,9 @@ public class JmsController {
 
   @Autowired
   private JmsTemplate jmsTemplate;
+
+  @Autowired
+  private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
   @RequestMapping("sendMessage.action")
   @ResponseBody
@@ -26,13 +30,16 @@ public class JmsController {
       return resp;
     }
 
-    // 发送消息
-    jmsTemplate.send(session -> {
-      return session.createTextMessage(textMessage);
+    // 异步发送消息
+    threadPoolTaskExecutor.execute(() -> {
+      // 实现回调接口创建消息
+      jmsTemplate.send(session -> {
+        return session.createTextMessage(textMessage);
+      });
     });
+
     resp.put("statusCode", 1);
     resp.put("msg", "消息发送成功!");
-
     return resp;
   }
 
