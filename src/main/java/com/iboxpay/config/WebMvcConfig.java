@@ -43,6 +43,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
   @Override
   public void configureViewResolvers(ViewResolverRegistry registry) {
+    // 开启内容裁决注意配置一定要配置相关错误页面，否则javamelody会失效
+    // registry.enableContentNegotiation(new MappingJackson2JsonView());
     registry.jsp("/WEB-INF/pages/", ".jsp");
   }
 }

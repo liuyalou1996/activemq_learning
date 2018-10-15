@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 启动mybatis的日志 -->
+	<settings>
+		<!-- 打印查询语句 -->
+		<setting name="logImpl" value="SLF4J" />
+		<setting name="callSettersOnNulls" value="true"/>
+		<!-- <setting name="logPrefix" value="mapper." /> -->
+	</settings>
+
+	<!-- 指定mybatis扫描的包，表名为包下的类型的小写形式,如com.iboxpay.entity.User的别名为user -->
+	<typeAliases>
+		<package name="com.iboxpay.entity" />
+	</typeAliases>
+
+	<plugins>
+		<!-- <plugin interceptor="com.github.pagehelper.PageInterceptor">
+			使用下面的方式配置参数，后面会有所有的参数介绍
+			<property name="supportMethodsArguments" value="true" />
+			<property name="params" value="pageNum=page.pageNum;pageSize=page.pageSize;"/>
+			<property name="params"
+				value="pageNum=pageNum;pageSize=pageSize;" />
+		</plugin> -->
+		<plugin interceptor="com.iboxpay.interceptor.MybatisInterceptor"></plugin>
+	</plugins>
+</configuration>
