@@ -43,7 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
   @Override
   public void configureViewResolvers(ViewResolverRegistry registry) {
-    // 开启内容裁决注意配置一定要配置相关错误页面，否则javamelody会失效
+    // 开启内容裁决注意配置一定要配置相关错误页面，否则内容裁决解析器会更改状态码，javamelody用户认证会失效
     // registry.enableContentNegotiation(new MappingJackson2JsonView());
     registry.jsp("/WEB-INF/pages/", ".jsp");
   }

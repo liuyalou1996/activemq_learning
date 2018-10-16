@@ -5,8 +5,8 @@
 	<settings>
 		<!-- 打印查询语句 -->
 		<setting name="logImpl" value="SLF4J" />
+		<!-- 查询结果类型如果为map，则空字段为空 -->
 		<setting name="callSettersOnNulls" value="true"/>
-		<!-- <setting name="logPrefix" value="mapper." /> -->
 	</settings>
 
 	<!-- 指定mybatis扫描的包，表名为包下的类型的小写形式,如com.iboxpay.entity.User的别名为user -->
@@ -15,13 +15,10 @@
 	</typeAliases>
 
 	<plugins>
-		<!-- <plugin interceptor="com.github.pagehelper.PageInterceptor">
-			使用下面的方式配置参数，后面会有所有的参数介绍
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
 			<property name="supportMethodsArguments" value="true" />
-			<property name="params" value="pageNum=page.pageNum;pageSize=page.pageSize;"/>
-			<property name="params"
-				value="pageNum=pageNum;pageSize=pageSize;" />
-		</plugin> -->
-		<plugin interceptor="com.iboxpay.interceptor.MybatisInterceptor"></plugin>
+			<property name="params" value="pageNum=pageNum;pageSize=pageSize;" />
+		</plugin>
+		<plugin interceptor="com.iboxpay.interceptors.MybatisInterceptor"></plugin>
 	</plugins>
 </configuration>

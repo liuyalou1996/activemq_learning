@@ -12,10 +12,6 @@
         <appender-ref ref="stdout" />
     </logger>
 
-	<logger name="org.mybatis" additivity="false" level="INFO">
-		<appender-ref ref="otherLogAppender" />
-	</logger>
-	
 	<root level="DEBUG">
 	</root>
 </configuration>

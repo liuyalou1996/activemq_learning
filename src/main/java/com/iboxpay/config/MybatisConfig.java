@@ -10,14 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 
 @Configuration
 @MapperScan(basePackages = "com.iboxpay.**.mapper", sqlSessionFactoryRef = "sqlSessionFactoryBean")
-@EnableTransactionManagement
 public class MybatisConfig {
 
   @Bean(name = "druidDataSource", initMethod = "init", destroyMethod = "close")
@@ -33,14 +31,15 @@ public class MybatisConfig {
     sqlSessionFactoryBean.setDataSource(druidDataSource);
 
     PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:mybatis/**/*Mapper.xml"));
-    sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:mybatis-config.xml"));
+    sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:mybatis/mapper/*Mapper.xml"));
+    sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:mybatis/mybatis-config.xml"));
     return sqlSessionFactoryBean;
   }
 
-  @Bean("transactionManager")
-  public DataSourceTransactionManager dataSourceTransactionManager() {
-    return new DataSourceTransactionManager();
+  @Bean
+  public DataSourceTransactionManager dataSourceTransactionManager(
+      @Qualifier("druidDataSource") DruidDataSource druidDataSource) {
+    return new DataSourceTransactionManager(druidDataSource);
   }
 
 }
