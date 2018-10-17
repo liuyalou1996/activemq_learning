@@ -23,7 +23,7 @@ public class StudentMapperTest {
   @Test
   public void getAllStudentsTest() {
     List<Map<String, Object>> list = studentMapper.getAllStudents(1, 6);
-    System.out.println(JsonUtils.toPrettyJsonStringWithNullValue(list));
+    System.out.println(JsonUtils.toJsonString(list));
   }
 
   @Test

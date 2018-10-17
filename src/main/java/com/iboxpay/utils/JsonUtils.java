@@ -8,43 +8,46 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class JsonUtils {
 
-  public static String toJsonString(Object obj) {
-    return toJsonString(obj, false, false);
+  public static String toJsonString(Object obj, SerializeFilter... filters) {
+    return toJsonString(obj, false, false, filters);
   }
 
-  public static String toJsonStringWithNullValue(Object obj) {
-    return toJsonString(obj, true, false);
+  public static String toJsonStringWithNullValue(Object obj, SerializeFilter... filters) {
+    return toJsonString(obj, true, false, filters);
   }
 
-  public static String toPrettyJsonString(Object obj) {
-    return toJsonString(obj, false, true);
+  public static String toPrettyJsonString(Object obj, SerializeFilter... filters) {
+    return toJsonString(obj, false, true, filters);
   }
 
-  public static String toPrettyJsonStringWithNullValue(Object obj) {
-    return toJsonString(obj, true, true);
+  public static String toPrettyJsonStringWithNullValue(Object obj, SerializeFilter... filters) {
+    return toJsonString(obj, true, true, filters);
   }
 
-  private static String toJsonString(Object obj, boolean isNullValueAllowed, boolean prettyFormat) {
+  private static String toJsonString(Object obj, boolean isNullValueAllowed, boolean prettyFormat,
+      SerializeFilter... filters) {
     if (obj == null) {
       return null;
     }
 
     if (isNullValueAllowed) {
       if (prettyFormat) {
-        return JSON.toJSONString(obj, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
+        return JSON.toJSONString(obj, filters, SerializerFeature.WriteMapNullValue, SerializerFeature.PrettyFormat,
+            SerializerFeature.WriteDateUseDateFormat);
       }
-
-      return JSON.toJSONString(obj, SerializerFeature.WRITE_MAP_NULL_FEATURES);
+      return JSON.toJSONString(obj, filters, SerializerFeature.WriteMapNullValue,
+          SerializerFeature.WriteDateUseDateFormat);
     } else {
       if (prettyFormat) {
-        return JSON.toJSONString(obj, SerializerFeature.PrettyFormat);
+        return JSON.toJSONString(obj, filters, SerializerFeature.PrettyFormat,
+            SerializerFeature.WriteDateUseDateFormat);
       }
-
-      return JSON.toJSONString(obj);
+      return JSON.toJSONString(obj, filters, SerializerFeature.WriteDateUseDateFormat);
     }
   }
 
@@ -129,5 +132,4 @@ public class JsonUtils {
     String jsonStr = JSON.toJSONString(map);
     return JSON.parseObject(jsonStr, clazz);
   }
-
 }

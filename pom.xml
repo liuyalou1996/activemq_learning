@@ -16,7 +16,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.4.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
 
 	<properties>
@@ -68,7 +68,7 @@
 			</exclusions> -->
 		</dependency>
 		
-		<!-- mybatis start,mybatis选用3.4.0版本,整合插件使用1.3.0 -->
+		<!-- mybatis start,mybatis选用3.4.0版本,整合spring插件使用1.3.0 -->
 		<!-- <dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>

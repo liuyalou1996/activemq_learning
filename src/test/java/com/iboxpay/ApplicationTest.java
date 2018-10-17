@@ -43,6 +43,5 @@ public class ApplicationTest {
     String jsonStr = JSON.toJSONString(DruidStatManagerFacade.getInstance().getDataSourceStatDataList(),
         SerializerFeature.PrettyFormat);
     System.err.println(jsonStr);
-    System.err.println(druidDataSource);
   }
 }
