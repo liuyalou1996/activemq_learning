@@ -73,8 +73,6 @@ public class ActiveMQConfig {
     jmsTemplate.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
     // 指定发送目的地
     jmsTemplate.setDefaultDestination(activeMQQueue);
-    // 设置消息的存活时间，默认为0，表示用不过期
-    jmsTemplate.setTimeToLive(0);
     return jmsTemplate;
   }
 
