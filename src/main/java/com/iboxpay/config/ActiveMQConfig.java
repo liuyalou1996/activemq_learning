@@ -3,13 +3,13 @@ package com.iboxpay.config;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
@@ -18,11 +18,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import com.iboxpay.jms.listener.MyListener;
 
 @Configuration
-@PropertySource("classpath:jms.properties")
 public class ActiveMQConfig {
-
-  @Autowired
-  private JmsConfig jmsConfig;
 
   @Autowired
   private MyListener myListener;
@@ -34,7 +30,19 @@ public class ActiveMQConfig {
   @Bean(name = "pooledConnectionFactory", destroyMethod = "stop")
   public PooledConnectionFactory pooledConnectionFactory() {
     ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-    connectionFactory.setBrokerURL(jmsConfig.getBrokerUrl());
+    connectionFactory.setBrokerURL("tcp://127.0.0.1:61616");
+    connectionFactory.setSendTimeout(0);
+    // 消息压缩，能提高发送效率，但会增加CPU的消耗性能
+    connectionFactory.setUseCompression(true);
+    // 异步发送，可能会导致消息丢失
+    connectionFactory.setUseAsyncSend(true);
+    // 信任所有消息包
+    connectionFactory.setTrustAllPackages(true);
+    // 预获取策略，默认从队列中预获取1000条消息
+    ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
+    prefetchPolicy.setQueuePrefetch(1000);
+    connectionFactory.setPrefetchPolicy(prefetchPolicy);
+
     return new PooledConnectionFactory(connectionFactory);
   }
 
@@ -44,7 +52,7 @@ public class ActiveMQConfig {
    */
   @Bean("activeMQQueue")
   public ActiveMQQueue activeMQQueue() {
-    return new ActiveMQQueue(jmsConfig.getDestinationName());
+    return new ActiveMQQueue("spring_jms_test");
   }
 
   /**
@@ -65,6 +73,8 @@ public class ActiveMQConfig {
     jmsTemplate.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
     // 指定发送目的地
     jmsTemplate.setDefaultDestination(activeMQQueue);
+    // 设置消息的存活时间，默认为0，表示用不过期
+    jmsTemplate.setTimeToLive(0);
     return jmsTemplate;
   }
 
@@ -101,17 +111,16 @@ public class ActiveMQConfig {
     container.setDestination(activeMQQueue);
     // 指定事务管理器
     container.setTransactionManager(jmsTransactionManager);
-
     // 指定消息监听器
     container.setMessageListener(myListener);
     // 并发消费者数量
-    container.setConcurrentConsumers(jmsConfig.getConcurrentConsumers());
+    container.setConcurrentConsumers(5);
     // 最大并发消费者数量
-    container.setMaxConcurrentConsumers(jmsConfig.getMaxConcurrentConsumers());
-    // 指定任务执行器运行监听线程
+    container.setMaxConcurrentConsumers(10);
+    // 指定任务执行器运行监听器线程
     container.setTaskExecutor(threadPoolTaskExecutor);
     // 接收时长
-    container.setReceiveTimeout(jmsConfig.getReceiveTimeout());
+    container.setReceiveTimeout(0);
     return container;
   }
 
@@ -122,10 +131,11 @@ public class ActiveMQConfig {
   @Bean("threadPoolTaskExecutor")
   public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
     ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-    threadPoolTaskExecutor.setCorePoolSize(20);
-    threadPoolTaskExecutor.setMaxPoolSize(100);
+    threadPoolTaskExecutor.setCorePoolSize(5);
+    threadPoolTaskExecutor.setMaxPoolSize(10);
     threadPoolTaskExecutor.setKeepAliveSeconds(300);
     threadPoolTaskExecutor.setQueueCapacity(1000);
+    threadPoolTaskExecutor.setKeepAliveSeconds(300);
     threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
     return threadPoolTaskExecutor;
   }

@@ -8,4 +8,8 @@
 	<select id="getStudentById" parameterType="student" resultType="map">
 		select name from student where sid = #{student.id}
 	</select>
+	
+	<select id="getStudentByName" parameterType="map" resultType="map">
+		select name from student where name = #{name}
+	</select>
 </mapper>

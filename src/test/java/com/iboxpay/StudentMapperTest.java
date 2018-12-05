@@ -1,5 +1,6 @@
 package com.iboxpay;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,15 @@ public class StudentMapperTest {
     student.setId(1);
     Map<String, Object> map = studentMapper.getStudentById(student);
     System.out.println(map);
+  }
+
+  @Test
+  public void getStudentByName() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("name", null);
+    Map<String, Object> map = studentMapper.getStudentByName(null);
+    System.out.println(map);
+
   }
 
 }

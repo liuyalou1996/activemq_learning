@@ -13,25 +13,16 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.iboxpay.config.JmsConfig;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 public class ApplicationTest {
 
   @Autowired
-  private JmsConfig jmsConfig;
-
-  @Autowired
   private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
   @Autowired
   private DruidDataSource druidDataSource;
-
-  @Test
-  public void getJmsConfigTest() {
-    System.out.println(jmsConfig);
-  }
 
   @Test
   public void getThreadPoolTaskExecutor() {
